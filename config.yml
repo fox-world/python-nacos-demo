@@ -1,0 +1,8 @@
+nacos:
+  server_address: 10.10.2.98:8858
+  server_port: 8858
+  namespace: e1c19595-0757-4231-89cb-19ea2db3bd8d
+  cluster_name: default
+  group_name: dev-1
+  service_name: flask-app
+  service_address: 10.30.65.49

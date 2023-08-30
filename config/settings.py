@@ -1,6 +1,15 @@
 from logging.config import dictConfig
-import nacos
 from flask import current_app
+
+import nacos
+import yaml
+import time
+import threading
+
+
+def read_config():
+    with open("config.yml", 'r') as stream:
+        return yaml.safe_load(stream)
 
 
 def init_log():
@@ -23,22 +32,31 @@ def init_log():
     })
 
 
-def register_nacos():
-    service_name = "flask-app"
-    ip = "10.30.65.49"
-    port = "8858"
-    cluster_name = "default"
+def register_nacos(yml_data):
+    server_address = yml_data['nacos']['server_address']
+    namespace = yml_data['nacos']['namespace']
+    client = nacos.NacosClient(server_address, namespace=namespace)
 
-    SERVER_ADDRESSES = "10.10.2.98:8858"
-    NAMESPACE = "e1c19595-0757-4231-89cb-19ea2db3bd8d"
-
-    client = nacos.NacosClient(SERVER_ADDRESSES, namespace=NAMESPACE)
-
-    client.add_naming_instance(service_name, ip, port, cluster_name, group_name="dev-1")
-
+    ip = yml_data['nacos']['service_address']
+    port = yml_data['nacos']['server_port']
+    cluster_name = yml_data['nacos']['cluster_name']
+    service_name = yml_data['nacos']['service_name']
+    group_name = yml_data['nacos']['group_name']
+    client.add_naming_instance(service_name, ip, port, cluster_name, group_name=group_name)
     current_app.logger.info("=========register nacos success===========")
+
+    thread = threading.Thread(target=send_heartbeat, name="send_heartbeat_threads",
+                              args=(client, service_name, ip, port, cluster_name, group_name))
+    thread.start()
+
+
+def send_heartbeat(client, service_name, ip, port, cluster_name, group_name):
+    while True:
+        client.send_heartbeat(service_name, ip, port, cluster_name=cluster_name, group_name=group_name)
+        time.sleep(5)
 
 
 def init_config():
+    yml_data = read_config()
     init_log()
-    register_nacos()
+    register_nacos(yml_data)
