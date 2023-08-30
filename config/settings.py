@@ -1,35 +1,16 @@
-from logging.config import dictConfig
-from flask import current_app
-
 import nacos
 import yaml
 import time
 import threading
 
+from config.log import init_log
+from flask import current_app
+import logging
+
 
 def read_config():
     with open("config.yml", 'r') as stream:
         return yaml.safe_load(stream)
-
-
-def init_log():
-    dictConfig({
-        'version': 1,
-        'formatters': {'default': {
-            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-        }},
-        'handlers': {
-            'wsgi': {
-                'class': 'logging.StreamHandler',
-                'stream': 'ext://flask.logging.wsgi_errors_stream',
-                'formatter': 'default'
-            }
-        },
-        'root': {
-            'level': 'INFO',
-            'handlers': ['wsgi']
-        }
-    })
 
 
 def register_nacos(yml_data):
@@ -51,8 +32,10 @@ def register_nacos(yml_data):
 
 
 def send_heartbeat(client, service_name, ip, port, cluster_name, group_name):
+    logger = logging.getLogger(__name__)
     while True:
-        client.send_heartbeat(service_name, ip, port, cluster_name=cluster_name, group_name=group_name)
+        response = client.send_heartbeat(service_name, ip, port, cluster_name=cluster_name, group_name=group_name)
+        logger.info(response)
         time.sleep(5)
 
 
