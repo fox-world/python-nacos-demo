@@ -22,7 +22,8 @@ def hello():
 
 @app.route('/config')
 def read_config():
-    print(cs.client)
+    print(cs.NACOS_SERVER.server_address)
+    print(cs.NACOS_SERVICE.namespace)
     result = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     result += '\tHello flask!'
     return result

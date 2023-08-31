@@ -1,5 +1,6 @@
 from logging.config import dictConfig
 
+
 def init_log():
     dictConfig({
         'version': 1,

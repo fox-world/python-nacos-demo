@@ -1,6 +1,9 @@
 nacos:
+  # server config
   server_address: 10.10.2.98:8858
   server_port: 8858
+
+  # service config
   namespace: e1c19595-0757-4231-89cb-19ea2db3bd8d
   cluster_name: default
   group_name: dev-1
