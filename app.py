@@ -24,5 +24,7 @@ def hello():
 
 @app.route('/config')
 def read_config():
+    result = dict(time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     config = cn.read_config(cn.NACOS_CLIENT, "training_datasource_config.yml", "orienlink")
-    return yaml.safe_load(config)
+    result['config'] = yaml.safe_load(config)
+    return result
