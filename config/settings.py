@@ -13,9 +13,13 @@ def read_config():
         return yaml.safe_load(stream)
 
 
+client = None
+
+
 def register_nacos(yml_data):
     server_address = yml_data['nacos']['server_address']
     namespace = yml_data['nacos']['namespace']
+    global client
     client = nacos.NacosClient(server_address, namespace=namespace)
 
     ip = yml_data['nacos']['service_address']

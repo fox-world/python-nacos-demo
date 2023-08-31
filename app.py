@@ -1,12 +1,12 @@
 import datetime
 from flask import Flask
 
-from config.settings import init_config
+import config.settings as cs
 
 app = Flask(__name__)
 
 with app.app_context():
-    init_config()
+    cs.init_config()
     app.logger.info("=========flask start success===========")
 
 if __name__ == '__main__':
@@ -15,6 +15,14 @@ if __name__ == '__main__':
 
 @app.route('/')
 def hello():
+    result = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    result += '\tHello flask!'
+    return result
+
+
+@app.route('/config')
+def read_config():
+    print(cs.client)
     result = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     result += '\tHello flask!'
     return result
