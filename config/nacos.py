@@ -25,6 +25,7 @@ class NacosService:
 
 NACOS_SERVER = None
 NACOS_SERVICE = None
+NACOS_CLIENT = None
 
 
 def register_nacos(yml_data):
@@ -43,12 +44,13 @@ def register_nacos(yml_data):
     global NACOS_SERVICE
     NACOS_SERVICE = NacosService(namespace, cluster_name, group_name, service_name, service_address)
 
-    client = nacos.NacosClient(server_address, namespace=namespace)
-    client.add_naming_instance(service_name, service_address, port, cluster_name, group_name=group_name)
+    global NACOS_CLIENT
+    NACOS_CLIENT = nacos.NacosClient(server_address, namespace=namespace)
+    NACOS_CLIENT.add_naming_instance(service_name, service_address, port, cluster_name, group_name=group_name)
     current_app.logger.info("=========register nacos success===========")
 
     thread = threading.Thread(target=send_heartbeat, name="send_heartbeat_threads",
-                              args=(client, service_name, service_address, port, cluster_name, group_name))
+                              args=(NACOS_CLIENT, service_name, service_address, port, cluster_name, group_name))
     thread.start()
 
 
@@ -58,3 +60,8 @@ def send_heartbeat(client, service_name, ip, port, cluster_name, group_name):
         response = client.send_heartbeat(service_name, ip, port, cluster_name=cluster_name, group_name=group_name)
         logger.info(response)
         time.sleep(5)
+
+
+def read_config(client, data_id, group):
+    config = client.get_config(data_id, group, no_snapshot=True)
+    return config

@@ -1,4 +1,5 @@
 import datetime
+import yaml
 from flask import Flask
 
 import config.nacos as cn
@@ -23,8 +24,5 @@ def hello():
 
 @app.route('/config')
 def read_config():
-    print(cn.NACOS_SERVER.server_address)
-    print(cn.NACOS_SERVICE.namespace)
-    result = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    result += '\tHello flask!'
-    return result
+    config = cn.read_config(cn.NACOS_CLIENT, "training_datasource_config.yml", "orienlink")
+    return yaml.safe_load(config)
