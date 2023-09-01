@@ -1,6 +1,6 @@
 import datetime
 import yaml
-from flask import Flask
+from flask import Flask,request
 
 import config.nacos as cn
 import config.settings as cs
@@ -23,8 +23,15 @@ def hello():
 
 
 @app.route('/config')
-def read_config():
+def get_config():
     result = dict(time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    config = cn.read_config(cn.NACOS_CLIENT, "training_datasource_config.yml", "orienlink")
+    config = cn.get_config("training_datasource_config.yml", "orienlink")
     result['config'] = yaml.safe_load(config)
+    return result
+
+
+@app.route("/instances")
+def get_instance():
+    service_name = request.args.get("service_name")
+    result = cn.get_instance(service_name)
     return result
