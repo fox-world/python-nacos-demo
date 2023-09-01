@@ -1,11 +1,12 @@
-import datetime
 import yaml
-from flask import Flask, request
+from flask import Flask
 import log
 import nacos_service as ns
+import views
 
 app = Flask(__name__)
 
+# 程序启动后的初始化工作
 with app.app_context():
     with open("config.yml", 'r') as stream:
         yaml_data = yaml.safe_load(stream)
@@ -18,34 +19,7 @@ with app.app_context():
 if __name__ == '__main__':
     app.run()
 
-
-@app.route('/')
-def hello():
-    result = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    result += '\tHello flask!'
-    return result
-
-
-@app.route('/config')
-def get_config():
-    result = dict(time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    config = ns.get_config("training_datasource_config.yml", "orienlink")
-    result['config'] = yaml.safe_load(config)
-    return result
-
-
-@app.route("/instances")
-def get_instance():
-    service_name = request.args.get("service_name")
-    result = ns.get_instance(service_name)
-    return result
-
-
-@app.route("/invoke")
-def invoke_instance():
-    service = request.args.get("service")
-    method = request.args.get("method")
-    response = ns.invoke_instance(service, method)
-    result = dict(time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    result['data'] = response
-    return result
+app.add_url_rule('/', view_func=views.hello)
+app.add_url_rule('/config', view_func=views.get_config)
+app.add_url_rule('/instances', view_func=views.get_instance)
+app.add_url_rule('/invoke', view_func=views.invoke_instance)
