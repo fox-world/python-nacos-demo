@@ -1,6 +1,6 @@
 import datetime
 import yaml
-from flask import Flask,request
+from flask import Flask, request
 
 import config.nacos as cn
 import config.settings as cs
@@ -34,4 +34,14 @@ def get_config():
 def get_instance():
     service_name = request.args.get("service_name")
     result = cn.get_instance(service_name)
+    return result
+
+
+@app.route("/invoke")
+def invoke_instance():
+    service = request.args.get("service")
+    method = request.args.get("method")
+    response = cn.invoke_instance(service, method)
+    result = dict(time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    result['data'] = response
     return result

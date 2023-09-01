@@ -2,6 +2,8 @@ import nacos
 import time
 import threading
 import logging
+import requests
+import json
 
 from flask import current_app
 
@@ -66,10 +68,18 @@ def get_config(data_id, group):
 
 
 def get_instance(service_name):
-    logging.basicConfig(level=logging.DEBUG)
     namespace = NACOS_SERVICE.namespace
     group_name = NACOS_SERVICE.group_name
     instances = NACOS_CLIENT.list_naming_instance(service_name, namespace_id=namespace,
                                                   group_name=group_name,
                                                   healthy_only=True)
     return instances
+
+
+def invoke_instance(service, method):
+    instances = get_instance(service)
+    ip = instances['hosts'][0]['ip']
+    port = instances['hosts'][0]['port']
+    url = "http://" + ip + ":" + str(port) + "/" + method
+    response = requests.get(url).text
+    return json.loads(response)
