@@ -1,5 +1,5 @@
 import yaml
-from config.nacos import register_nacos
+from nacos_service import register_nacos
 
 
 def read_config():

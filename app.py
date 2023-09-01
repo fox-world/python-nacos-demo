@@ -2,8 +2,8 @@ import datetime
 import yaml
 from flask import Flask, request
 
-import config.nacos as cn
-import config.settings as cs
+import nacos_service as cn
+import settings as cs
 import logging
 import sys
 
