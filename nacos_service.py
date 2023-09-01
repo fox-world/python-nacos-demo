@@ -5,8 +5,6 @@ import logging
 import requests
 import json
 
-from flask import current_app
-
 
 class NacosServer:
 
@@ -28,8 +26,9 @@ NACOS_SERVER = None
 NACOS_SERVICE = None
 NACOS_CLIENT = None
 
-logger = logging.getLogger("nacos")
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
 
 def register_nacos(yml_data):
     # 服务器配置
