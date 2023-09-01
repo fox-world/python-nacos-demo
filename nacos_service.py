@@ -28,6 +28,8 @@ NACOS_SERVER = None
 NACOS_SERVICE = None
 NACOS_CLIENT = None
 
+logger = logging.getLogger("nacos")
+logger.setLevel(logging.INFO)
 
 def register_nacos(yml_data):
     # 服务器配置
@@ -47,7 +49,7 @@ def register_nacos(yml_data):
     global NACOS_CLIENT
     NACOS_CLIENT = nacos.NacosClient(server_address, namespace=namespace)
     NACOS_CLIENT.add_naming_instance(service_name, service_address, port, group_name=group_name)
-    current_app.logger.info("=========register nacos success===========")
+    logger.info("=========register nacos success===========")
 
     thread = threading.Thread(target=send_heartbeat, name="send_heartbeat_threads",
                               args=(NACOS_CLIENT, service_name, service_address, port, group_name))

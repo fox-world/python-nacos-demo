@@ -3,11 +3,10 @@ import yaml
 from flask import Flask, request
 
 import nacos_service as cn
-import settings as cs
 import logging
 import sys
 
-logger = logging.getLogger()
+logger = logging.getLogger("app")
 logger.setLevel(logging.INFO)
 stdout = logging.StreamHandler(sys.stdout)
 stdout.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s"))
@@ -16,7 +15,9 @@ logger.addHandler(stdout)
 app = Flask(__name__)
 
 with app.app_context():
-    cs.init_config()
+    with open("config.yml", 'r') as stream:
+        yaml_data = yaml.safe_load(stream)
+    cn.register_nacos(yaml_data)
     app.logger.info("=========flask start success===========")
 
 if __name__ == '__main__':
