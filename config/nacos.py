@@ -55,10 +55,8 @@ def register_nacos(yml_data):
 
 
 def send_heartbeat(client, service_name, ip, port, group_name):
-    logger = logging.getLogger(__name__)
     while True:
-        response = client.send_heartbeat(service_name, ip, port, group_name=group_name)
-        logger.info(response)
+        client.send_heartbeat(service_name, ip, port, group_name=group_name)
         time.sleep(5)
 
 

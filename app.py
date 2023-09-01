@@ -4,6 +4,14 @@ from flask import Flask, request
 
 import config.nacos as cn
 import config.settings as cs
+import logging
+import sys
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+stdout = logging.StreamHandler(sys.stdout)
+stdout.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s"))
+logger.addHandler(stdout)
 
 app = Flask(__name__)
 
