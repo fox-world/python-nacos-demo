@@ -5,6 +5,8 @@ import logging
 import requests
 import json
 
+import log
+
 
 class NacosServer:
 
@@ -26,8 +28,7 @@ NACOS_SERVER = None
 NACOS_SERVICE = None
 NACOS_CLIENT = None
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger = log.get_logger(__name__)
 
 
 def register_nacos(yml_data):
