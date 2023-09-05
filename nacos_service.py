@@ -52,7 +52,8 @@ def register_nacos(yml_data):
     logger.info("=========register nacos success===========")
 
     thread = threading.Thread(target=send_heartbeat, name="send_heartbeat_threads",
-                              args=(NACOS_CLIENT, service_name, service_address, port, group_name))
+                              args=(NACOS_CLIENT, service_name, service_address, port, group_name),
+                              daemon=True)
     thread.start()
 
 
