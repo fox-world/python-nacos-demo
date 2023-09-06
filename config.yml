@@ -8,3 +8,4 @@ nacos:
   group_name: dev-1
   service_name: flask-app
   service_address: 10.30.65.49
+  service_port: 5000
